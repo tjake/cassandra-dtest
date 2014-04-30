@@ -90,7 +90,7 @@ class TestBootstrapConsistency(Tester):
 
         for n in xrange(30,1000):
             query_c1c2(n3cursor, n, 'ALL')
-            
+
     def consistent_reads_after_relocate_test(self):
         debug("Creating a ring")
         cluster = self.cluster
@@ -144,7 +144,12 @@ class TestBootstrapConsistency(Tester):
         cmd = "taketoken %s" % tl
         debug(cmd)
         node3.nodetool(cmd)
-        #assert 1 == 0    
+
+        n1cursor.execute('SELECT tokens FROM system.local')
+        tokens = n1cursor.fetchone()
+        debug("%s" % tokens)
+        assert len(tokens) == 2
+
 
         debug("Checking that no data was lost")
         for n in xrange(10,20):
